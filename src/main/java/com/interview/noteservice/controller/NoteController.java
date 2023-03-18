@@ -1,6 +1,5 @@
 package com.interview.noteservice.controller;
 
-import com.interview.noteservice.model.Action;
 import com.interview.noteservice.model.entities.Note;
 import com.interview.noteservice.service.NoteService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class NoteController {
 
     @PutMapping("/{id}")
     public Note updateNote(@PathVariable String id, @RequestBody Note note) {
-        log.trace("Updating a note with id='{}'m with new note: {}", id, note);
+        log.trace("Updating a note with id='{}' with new note: {}", id, note);
         return noteService.updateNote(id, note);
     }
 
@@ -46,13 +45,21 @@ public class NoteController {
         noteService.deleteNote(id);
     }
 
-    // This endpoint can be divided to 'like' and 'dislike' but REST principles are violated in this case
-    // PATCH is used because we partially change the entity
-    @PatchMapping("/{id}/likes")
-    public ResponseEntity<Note> likeDislikeNote(
-            @PathVariable("id") String id,
-            @RequestParam("action") Action action) {
-        log.info("Executing action='{}' for the note with id='{}'", action, id);
-        return ResponseEntity.ok(noteService.likeDislikeNote(id, action));
+    // These endpoints can be combined to '/{id}/likes' with control parameter.
+    // In this case REST principles are not violated but the code and the function are not "clear"
+    // PATCH is used because the entity is partially updated
+    // Also need to clarify that authenticated user can like endless number of times
+    @PatchMapping("/{id}/like")
+    public ResponseEntity<Note> likeNote(
+            @PathVariable("id") String id) {
+        log.info("Liking the note with id='{}'", id);
+        return ResponseEntity.ok(noteService.likeDislikeNote(id, note -> note.getLikes() + 1));
+    }
+
+    @PatchMapping("/{id}/dislike")
+    public ResponseEntity<Note> dislikeNote(
+            @PathVariable("id") String id) {
+        log.info("Disliking the note with id='{}'", id);
+        return ResponseEntity.ok(noteService.likeDislikeNote(id, note -> note.getLikes() - 1));
     }
 }

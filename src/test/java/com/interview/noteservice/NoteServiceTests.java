@@ -1,7 +1,6 @@
 package com.interview.noteservice;
 
-import com.interview.noteservice.exception.NoEntityFound;
-import com.interview.noteservice.model.Action;
+import com.interview.noteservice.exception.NoEntityFoundException;
 import com.interview.noteservice.model.entities.Note;
 import com.interview.noteservice.repository.NoteRepository;
 import com.interview.noteservice.service.NoteService;
@@ -25,8 +24,6 @@ public class NoteServiceTests {
     @Mock
     private NoteRepository noteRepository;
 
-
-
     @Test
     void testUpdateNote() {
         Note existingNote = new Note("Note 1", 1);
@@ -40,13 +37,12 @@ public class NoteServiceTests {
         assertThat(result).isEqualTo(updatedNote);
     }
 
-
     @Test
     void testUpdateNoteNotFound() {
         Note updatedNote = new Note("Note 1", 1);
         when(noteRepository.findById("1")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> noteService.updateNote("1", updatedNote)).isInstanceOf(NoEntityFound.class);
+        assertThatThrownBy(() -> noteService.updateNote("1", updatedNote)).isInstanceOf(NoEntityFoundException.class);
     }
 
     @Test
@@ -64,7 +60,7 @@ public class NoteServiceTests {
 
         when(noteRepository.findById("1")).thenReturn(Optional.of(note));
 
-        Note result = noteService.likeDislikeNote("1", Action.LIKE);
+        Note result = noteService.likeDislikeNote("1", noteParam -> noteParam.getLikes() + 1);
 
         assertThat(result.getLikes()).isEqualTo(2);
     }
@@ -75,18 +71,9 @@ public class NoteServiceTests {
 
         when(noteRepository.findById("1")).thenReturn(Optional.of(note));
 
-        Note result = noteService.likeDislikeNote("1", Action.DISLIKE);
+        Note result = noteService.likeDislikeNote("1", noteParam -> noteParam.getLikes() - 1);
 
         assertThat(result.getLikes()).isEqualTo(1);
     }
 
-    @Test
-    void testNonExistentAction() {
-        Note note = new Note("Note 1", 2);
-
-        when(noteRepository.findById("1")).thenReturn(Optional.of(note));
-
-        assertThatThrownBy(() -> noteService.likeDislikeNote("1", Action.CREATE))
-                .isInstanceOf(NoEntityFound.class);
-    }
 }

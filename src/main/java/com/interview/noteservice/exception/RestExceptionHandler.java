@@ -17,20 +17,20 @@ public class RestExceptionHandler {
     @ResponseBody
     // We can return some custom class here
     public ResponseEntity<String> handleCommonException(Exception ex) {
-        log.error("Exception found: ", ex);
+        log.error("The exception is found: ", ex);
         // Returns only abstract message because the exception can contain sensitive information
-        // about used libs and frameworks. It is not secured.
+        // about used libs and frameworks. It is not secure.
         return new ResponseEntity<>(
-                "There is some troubles. Please contact your administrator",
+                "There are some troubles. Please contact your administrator",
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 
-    @ExceptionHandler(NoEntityFound.class)
+    @ExceptionHandler(NoEntityFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<String> handleNoEntityFoundException(NoEntityFound ex) {
-        log.error("Exception found: ", ex);
+    public ResponseEntity<String> handleNoEntityFoundException(NoEntityFoundException ex) {
+        log.error("The exception is found: ", ex);
         return new ResponseEntity<>(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST

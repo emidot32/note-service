@@ -36,7 +36,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // There are requirements for storing users therefore decided to use in-memory user service
+    // There are no requirements for storing users therefore decided to use in-memory user service
     // for simplifying db model and code
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
