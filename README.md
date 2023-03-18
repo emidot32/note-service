@@ -19,7 +19,7 @@ For running the service you need:
 2) Clone project `git clone https://github.com/emidot32/note-service.git`
 3) Run `docker-compose up --build` in target folder
 
-You can authenticate as user with username 'name' and password '123'.
+You can authenticate as user with username 'user' and password '123'.
 
 The service can be improved by:
 1) Adding Swagger for better documentation and comfortable API testing.
